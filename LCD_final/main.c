@@ -1,4 +1,3 @@
-//#include "msp430.h"
 #include <msp430x22x2.h>
 #include "adc_ads.h"
 #include "spi.h"
@@ -36,17 +35,6 @@ void initPortPins(void)
 	IO_ADC_CS_DIS;
 }
 
-/*void tx ( void )
-{
-		can_push_ptr->address =  BMS_S1_CAN_BASE;
-		can_push_ptr->data.data_u16[0] = 123;
-		can_push_ptr->data.data_u16[1] = 456;
-		can_push_ptr->data.data_u16[2] = 789;
-		can_push_ptr->status = 6;
-		can_push();
-	    can_transmit();
-}*/
-
 void clock_init (void)
 {
 	DCOCTL = CALDCO_12MHZ;
@@ -82,16 +70,10 @@ void main(void)
 	__enable_interrupt();                     // Enable interrupt
 	
   initPortPins();                           // Initialize port pins
-//  timer_init();
-//  ADC_init();
-//  DAC_init();
   uart_init();
   spi_init();
   spi_set_mode ( UCCKPH, 0, 5 );
   can_init(CAN_BITRATE_250);
-  
-  //can_sleep();
-  //can_wake();
   
   while(1)
   {
@@ -129,6 +111,7 @@ void main(void)
   				a = can.data.data_u16[0];
   				itoa ( a, GEAR, 10 );
 
+  				//quick hack - read status for gear, update with new gear_num variable
   				uart_transmit('0');
   				uart_transmit('0');
   				uart_transmit('0');
@@ -206,9 +189,6 @@ void timer_init(void)
   
   TBCCR0 = 1058;
   TBCTL = TASSEL_2 + ID_1;
-
-//  TBCCR0 = 1058;
-//  TBCTL = TASSEL_2 + ID_1;
   
   CCTL0 = CCIE;                             // CCR0 interrupt enabled
   TBCCTL0 = CCIE;                             // CCR0 interrupt enabled
